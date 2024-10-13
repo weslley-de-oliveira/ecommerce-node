@@ -4,8 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsc-watch --onSuccess node",
-    "node" : "node ./lib/index.js"
+    "start": "npx tsc-watch --onSuccess \"node ./lib/index.js\""
   },
   "keywords": [],
   "author": "",
