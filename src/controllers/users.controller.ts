@@ -40,9 +40,11 @@ export class UserController {
     static update(req: Request, res: Response) {
         let userId = req.params.id;
         let user = req.body;
-        let indexOf = usuarios.findIndex((user) => user.id === userId);
-        usuarios[indexOf].nome = user.nome;
-        usuarios[indexOf].email = user.email;
+
+        getFirestore().collection('users').doc(userId).set({
+            nome: user.nome,
+            email: user.email
+        });
 
         res.send("Dados atualizados com sucesso!");
     }
