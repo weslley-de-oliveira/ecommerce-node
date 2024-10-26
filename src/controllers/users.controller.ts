@@ -17,9 +17,13 @@ export class UserController {
         res.send(users);
     }
 
-     static getById(req: Request, res: Response) {
-        let userId = parseInt(req.params.id);
-        let user = usuarios.find((user) => user.id === userId)
+     static async getById(req: Request, res: Response) {
+        let userId = req.params.id;
+        const doc = await getFirestore().collection('users').doc(userId).get();
+        let user = {
+            id: doc.id,
+            ...doc.data()
+        }
 
         res.send(user);
     }
@@ -34,7 +38,7 @@ export class UserController {
     }
 
     static update(req: Request, res: Response) {
-        let userId = parseInt(req.params.id);
+        let userId = req.params.id;
         let user = req.body;
         let indexOf = usuarios.findIndex((user) => user.id === userId);
         usuarios[indexOf].nome = user.nome;
@@ -44,7 +48,7 @@ export class UserController {
     }
 
     static delete(req: Request, res: Response) {
-        let userId = parseInt(req.params.id);
+        let userId = req.params.id;
         usuarios = usuarios.filter((user) => user.id !== userId);
 
         res.send("Usuário removido com sucesso!");
