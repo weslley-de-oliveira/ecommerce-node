@@ -1,8 +1,5 @@
 import { Request, Response  } from 'express';
 import { getFirestore } from 'firebase-admin/firestore';
-import { UserI } from '../interfaces/user.interface';
-
-let usuarios: Array<UserI> = [];
 
 export class UserController {
     static async getAll(req: Request, res: Response) {
@@ -49,9 +46,10 @@ export class UserController {
         res.send("Dados atualizados com sucesso!");
     }
 
-    static delete(req: Request, res: Response) {
+    static async delete(req: Request, res: Response) {
         let userId = req.params.id;
-        usuarios = usuarios.filter((user) => user.id !== userId);
+
+        await getFirestore().collection('users').doc(userId).delete();
 
         res.send("Usuário removido com sucesso!");
     }
