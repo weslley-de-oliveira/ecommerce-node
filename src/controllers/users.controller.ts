@@ -1,8 +1,8 @@
-import {Request, Response} from 'express'
+import { Request, Response  } from 'express';
+import { getFirestore } from 'firebase-admin/firestore';
 import { UserI } from '../interfaces/user.interface';
 
 let usuarios: Array<UserI> = [];
-let id = 0;
 
 export class UserController {
     static getAll(req: Request, res: Response) {
@@ -16,10 +16,9 @@ export class UserController {
         res.send(user);
     }
 
-    static save(req: Request, res: Response) {
+    static async save(req: Request, res: Response) {
         let user = req.body;
-        user.id = ++ id;
-        usuarios.push(user);
+        await getFirestore().collection('users').add(user);
 
         res.send({
             message: "Usuário criado com sucesso!"
