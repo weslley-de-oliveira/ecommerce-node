@@ -5,8 +5,16 @@ import { UserI } from '../interfaces/user.interface';
 let usuarios: Array<UserI> = [];
 
 export class UserController {
-    static getAll(req: Request, res: Response) {
-        res.send(usuarios);
+    static async getAll(req: Request, res: Response) {
+        const snapshot = await getFirestore().collection('users').get();
+        const users = snapshot.docs.map(doc => {
+            return {
+                id: doc.id,
+                ...doc.data()
+            };
+        });
+
+        res.send(users);
     }
 
      static getById(req: Request, res: Response) {
