@@ -21,77 +21,56 @@ export class UserController {
         }
     }
 
-     static async getById(req: Request, res: Response, next: NextFunction) {
-        try {
-            let userId = req.params.id;
-            const doc = await getFirestore().collection('users').doc(userId).get();
-            if (doc.exists) {
-                let user = {
-                    id: doc.id,
-                    ...doc.data()
-                }
-
-                res.send(user);
-            } else {
-                throw new NotFoundError("Usuário não encontrado!");
+    static async getById(req: Request, res: Response, next: NextFunction) {
+        let userId = req.params.id;
+        const doc = await getFirestore().collection('users').doc(userId).get();
+        if (doc.exists) {
+            let user = {
+                id: doc.id,
+                ...doc.data()
             }
 
-            
-        }
-        catch (error) {
-            next(error);
+            res.send(user);
+        } else {
+            throw new NotFoundError("Usuário não encontrado!");
         }
     }
 
     static async save(req: Request, res: Response, next: NextFunction) {
-        try {
-            let user = req.body;
+        let user = req.body;
 
-            if (!user.email || !user.email?.length) {
-                throw new ValidationError("Email obrigatório!");
-            }
-            
-            await getFirestore().collection('users').add(user);
-
-            res.status(201).send({
-                message: "Usuário criado com sucesso!"
-            });
-        } 
-        catch (error) {
-            next(error);
+        if (!user.email || !user.email?.length) {
+            throw new ValidationError("Email obrigatório!");
         }
+        
+        await getFirestore().collection('users').add(user);
+
+        res.status(201).send({
+            message: "Usuário criado com sucesso!"
+        });
     }
 
     static async update(req: Request, res: Response, next: NextFunction) {
-        try {
-            let userId = req.params.id;
-            let user = req.body;
-            let docRef = getFirestore().collection('users').doc(userId);
+        let userId = req.params.id;
+        let user = req.body;
+        let docRef = getFirestore().collection('users').doc(userId);
 
-            if ((await docRef.get()).exists) {
-                    await docRef.set({
-                    nome: user.nome,
-                    email: user.email
-                });
+        if ((await docRef.get()).exists) {
+                await docRef.set({
+                nome: user.nome,
+                email: user.email
+            });
 
-                 res.send("Dados atualizados com sucesso!");
-            } else {
-                throw new NotFoundError("Usuário não encontrado!")
-            }
-        } 
-        catch (error) {
-           next(error);
+                res.send("Dados atualizados com sucesso!");
+        } else {
+            throw new NotFoundError("Usuário não encontrado!")
         }
     }
 
     static async delete(req: Request, res: Response, next: NextFunction) {
-        try {
-            let userId = req.params.id;
-            await getFirestore().collection('users').doc(userId).delete();
+        let userId = req.params.id;
+        await getFirestore().collection('users').doc(userId).delete();
 
-            res.status(204).end();
-        } catch (error) {
-            next(error);
-        }
+        res.status(204).end();
     }
 }
