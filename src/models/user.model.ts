@@ -1,7 +1,7 @@
 import { Joi } from "celebrate"
 
 export interface UserI {
-    id: string,
+    id?: string,
     nome: string,
     email: string
 }
