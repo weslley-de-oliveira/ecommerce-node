@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response  } from 'express';
 import { getFirestore } from 'firebase-admin/firestore';
 import { NotFoundError } from '../errors/not-found.error';
+import { UserI } from '../models/user.model';
 
 export class UserController {
     static async getAll(req: Request, res: Response, next: NextFunction) {
@@ -47,7 +48,7 @@ export class UserController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         let userId = req.params.id;
-        let user = req.body;
+        let user = req.body as UserI;
         let docRef = getFirestore().collection('users').doc(userId);
 
         if ((await docRef.get()).exists) {
