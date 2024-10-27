@@ -1,8 +1,10 @@
-import { Request, Response  } from 'express';
+import { NextFunction, Request, Response  } from 'express';
 import { getFirestore } from 'firebase-admin/firestore';
+import { ValidationError } from '../errors/validation.error';
+import { NotFoundError } from '../errors/not-found.error';
 
 export class UserController {
-    static async getAll(req: Request, res: Response) {
+    static async getAll(req: Request, res: Response, next: NextFunction) {
         try {
             const snapshot = await getFirestore().collection('users').get();
             const users = snapshot.docs.map(doc => {
@@ -15,33 +17,40 @@ export class UserController {
             res.send(users);
         }
         catch (error) {
-            res.status(500).send({
-                message: "Erro interno do servidor."
-            });
+            next(error);
         }
     }
 
-     static async getById(req: Request, res: Response) {
+     static async getById(req: Request, res: Response, next: NextFunction) {
         try {
             let userId = req.params.id;
             const doc = await getFirestore().collection('users').doc(userId).get();
-            let user = {
-                id: doc.id,
-                ...doc.data()
+            if (doc.exists) {
+                let user = {
+                    id: doc.id,
+                    ...doc.data()
+                }
+
+                res.send(user);
+            } else {
+                throw new NotFoundError("Usuário não encontrado!");
             }
 
-            res.send(user);
+            
         }
         catch (error) {
-            res.status(500).send({
-                message: "Erro interno do servidor."
-            });
+            next(error);
         }
     }
 
-    static async save(req: Request, res: Response) {
+    static async save(req: Request, res: Response, next: NextFunction) {
         try {
             let user = req.body;
+
+            if (!user.email || !user.email?.length) {
+                throw new ValidationError("Email obrigatório!");
+            }
+            
             await getFirestore().collection('users').add(user);
 
             res.status(201).send({
@@ -49,41 +58,40 @@ export class UserController {
             });
         } 
         catch (error) {
-            res.status(500).send({
-                message: "Erro interno do servidor."
-            });
+            next(error);
         }
     }
 
-    static update(req: Request, res: Response) {
+    static async update(req: Request, res: Response, next: NextFunction) {
         try {
             let userId = req.params.id;
             let user = req.body;
+            let docRef = getFirestore().collection('users').doc(userId);
 
-            getFirestore().collection('users').doc(userId).set({
-                nome: user.nome,
-                email: user.email
-            });
+            if ((await docRef.get()).exists) {
+                    await docRef.set({
+                    nome: user.nome,
+                    email: user.email
+                });
 
-            res.send("Dados atualizados com sucesso!");
+                 res.send("Dados atualizados com sucesso!");
+            } else {
+                throw new NotFoundError("Usuário não encontrado!")
+            }
         } 
         catch (error) {
-            res.status(500).send({
-                message: "Erro interno do servidor."
-            });
+           next(error);
         }
     }
 
-    static async delete(req: Request, res: Response) {
+    static async delete(req: Request, res: Response, next: NextFunction) {
         try {
             let userId = req.params.id;
             await getFirestore().collection('users').doc(userId).delete();
 
             res.status(204).end();
         } catch (error) {
-            res.status(500).send({
-                message: "Erro interno do servidor."
-            });
+            next(error);
         }
     }
 }
