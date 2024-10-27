@@ -1,12 +1,15 @@
 import { NotFoundError } from "../errors/not-found.error";
 import { UserI } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
+import { AuthService } from "./auth.service";
 
 export class UserService {
     private userRepository: UserRepository;
+    private authService: AuthService;
 
     constructor() {
         this.userRepository = new UserRepository();
+        this.authService = new AuthService();
     }
 
     async getAll(): Promise<Array<UserI>> {
@@ -23,7 +26,9 @@ export class UserService {
     }
 
     async save(user: UserI): Promise<void> {
-        this.userRepository.save(user);
+        const userAuth = await this.authService.create(user);
+        user.id = userAuth.uid;
+        this.userRepository.update(user);
     }
 
     async update(id: string, user: UserI): Promise<void> {

@@ -28,6 +28,7 @@ export class UserRepository {
     }
 
     async save(user: UserI): Promise<void> {
+        delete user.password;
         await this.collection.add(user);
     }
 
