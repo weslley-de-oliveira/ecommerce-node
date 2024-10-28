@@ -1,3 +1,4 @@
+import { FirebaseAuthErrorsEnum } from "../enums/firebase-auth.erros.enum";
 import { EmailAlreadyExistsError } from "../errors/email-already-exists.error";
 import { UserI } from "../models/user.model";
 import { getAuth, UserRecord } from "firebase-admin/auth"
@@ -9,11 +10,11 @@ export class AuthService {
             password: user.password,
             displayName: user.nome
         }).catch((error) => {
-            if (error.code === 'auth/email-already-exists') {
+            if (error.code === FirebaseAuthErrorsEnum.EMAIL_ALREALDY_EXISTS) {
                 throw new EmailAlreadyExistsError();
             }
 
             throw error;
-        })
+        });
     }
 }
