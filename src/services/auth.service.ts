@@ -3,6 +3,8 @@ import { EmailAlreadyExistsError } from "../errors/email-already-exists.error";
 import { UserI } from "../models/user.model";
 import { FirebaseAuthError, getAuth, UserRecord } from "firebase-admin/auth"
 import { getAuth as getFirebaseAuth, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
+import { UnauthorizedError } from "../errors/unauthorized.error";
+import { TooManyRequestsError } from "../errors/too-many-requests.error";
 
 export class AuthService {
     async create(user: UserI): Promise<UserRecord> {
@@ -23,6 +25,17 @@ export class AuthService {
     }
 
     async login(email: string, password: string): Promise<UserCredential> {
-        return signInWithEmailAndPassword(getFirebaseAuth(), email, password);
+            return await signInWithEmailAndPassword(getFirebaseAuth(), email, password)
+            .catch (error => {
+                if (error.code === FirebaseAuthErrorsEnum.INVALID_CREDENTIAL) {
+                    throw new UnauthorizedError();
+                }
+
+                if (error.code === FirebaseAuthErrorsEnum.TOO_MANY_REQUESTS) {
+                    throw new TooManyRequestsError();
+                }
+
+                throw error;
+            })
     }
 }
