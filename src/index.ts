@@ -4,6 +4,7 @@ import { initializeApp as initializeFirebaseApp } from 'firebase/app';
 import { routes } from "./routes/index";
 import { erroHandler } from "./middlewares/error-handler.middleware";
 import { PageNotFoundHandler } from "./middlewares/page-not-found.middleware";
+import { auth } from "./middlewares/auth-middleware";
 
 initializeFirebaseAdminApp();
 initializeFirebaseApp({
@@ -11,7 +12,7 @@ initializeFirebaseApp({
 });
 
 const app = express();
-
+auth(app);
 routes(app);
 PageNotFoundHandler(app);
 erroHandler(app);
