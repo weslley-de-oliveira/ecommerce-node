@@ -4,8 +4,13 @@ import { getFirestore } from "firebase-admin/firestore";
 let usuarios: { id: number; nome: string; email: string }[] = [];
 
 export class UsersController {
-  static getAll(req: Request, res: Response) {
-    res.send(usuarios);
+  static async getAll(req: Request, res: Response) {
+    const snapshot = await getFirestore().collection("users").get();
+    const users = snapshot.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() };
+    });
+
+    res.send(users);
   }
 
   static getById(req: Request, res: Response) {
