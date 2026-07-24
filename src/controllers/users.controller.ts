@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { getFirestore } from "firebase-admin/firestore";
 
-let usuarios: { id: number; nome: string; email: string }[] = [];
-
 export class UsersController {
   static async getAll(req: Request, res: Response) {
     const snapshot = await getFirestore().collection("users").get();
@@ -32,18 +30,24 @@ export class UsersController {
 
   static update(req: Request, res: Response) {
     let user = req.body;
-    let userId = Number(req.params.id);
-    const index = usuarios.findIndex((user) => user.id === userId);
+    let userId = req.params.id as string;
 
-    usuarios[index] = { ...user, id: userId };
+    getFirestore().collection("users").doc(userId).set({
+      nome: user.nome,
+      email: user.email,
+    });
 
-    res.send(usuarios);
+    res.send({
+      message: "Usuário altera com sucesso!",
+    });
   }
 
   static delete(req: Request, res: Response) {
-    let userId = Number(req.params.id);
-    const newUsuarios = usuarios.filter((user) => user.id !== userId);
+    let userId = req.params.id as string;
+    getFirestore().collection("users").doc(userId).delete();
 
-    res.send(newUsuarios);
+    res.send({
+      message: "Usuário excluído com scesso!",
+    });
   }
 }
