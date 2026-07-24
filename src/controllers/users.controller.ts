@@ -27,18 +27,10 @@ export class UsersController {
   static async create(req: Request, res: Response, next: NextFunction) {
     const user = req.body;
 
-    if (!user.email || !user.email?.length) {
-      throw new ValidationError("E-mail obrigatório!");
-    }
-
-    if (!user.nome || !user.nome?.length) {
-      throw new ValidationError("Nome obrigatório!");
-    }
-
     await getFirestore().collection("users").add(user);
 
     res.status(201).send({
-      message: "Usuário criado com sucesso!",
+      message: "Usuário criado com sucesso!"
     });
   }
 
@@ -61,11 +53,11 @@ export class UsersController {
 
     await docRef.set({
       nome: user.nome,
-      email: user.email,
+      email: user.email
     });
 
     res.send({
-      message: "Usuário alterado  com sucesso!",
+      message: "Usuário alterado  com sucesso!"
     });
   }
 
@@ -79,7 +71,7 @@ export class UsersController {
     await docRef.delete();
 
     res.send({
-      message: "Usuário excluído com scesso!",
+      message: "Usuário excluído com scesso!"
     });
   }
 }
