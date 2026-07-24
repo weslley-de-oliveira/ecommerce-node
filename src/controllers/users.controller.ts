@@ -28,11 +28,11 @@ export class UsersController {
     });
   }
 
-  static update(req: Request, res: Response) {
+  static async update(req: Request, res: Response) {
     let user = req.body;
     let userId = req.params.id as string;
 
-    getFirestore().collection("users").doc(userId).set({
+    await getFirestore().collection("users").doc(userId).set({
       nome: user.nome,
       email: user.email,
     });
@@ -42,9 +42,9 @@ export class UsersController {
     });
   }
 
-  static delete(req: Request, res: Response) {
+  static async delete(req: Request, res: Response) {
     let userId = req.params.id as string;
-    getFirestore().collection("users").doc(userId).delete();
+    await getFirestore().collection("users").doc(userId).delete();
 
     res.send({
       message: "Usuário excluído com scesso!",
