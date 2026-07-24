@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsc-watch --onSuccess \"node ./lib/index.js\""
+    "start": "npx tsc-watch --onSuccess \"node --env-file=.env ./lib/index.js\""
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/weslley-de-oliveira/ecommerce-node#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "firebase-admin": "^14.2.0"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.13",
