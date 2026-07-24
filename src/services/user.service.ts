@@ -21,11 +21,11 @@ export class UserService {
     return { id: doc.id, ...doc.data() } as User;
   }
 
-  async create(user: User): Promise<void> {
+  async create(user: User) {
     await getFirestore().collection("users").add(user);
   }
 
-  async update(user: User, id: string): Promise<void> {
+  async update(user: User, id: string) {
     const docRef = getFirestore().collection("users").doc(id);
 
     if (!(await docRef.get()).exists) {
@@ -38,7 +38,7 @@ export class UserService {
     });
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string) {
     const docRef = getFirestore().collection("users").doc(id);
 
     if (!(await docRef.get()).exists) {
