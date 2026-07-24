@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { getFirestore } from "firebase-admin/firestore";
 import { NotFoundError } from "../errors/not-found.erro";
-import { ValidationError } from "../errors/validation.error";
+import { User } from "../models/user.model";
 
 export class UsersController {
   static async getAll(req: Request, res: Response, next: NextFunction) {
@@ -35,17 +35,9 @@ export class UsersController {
   }
 
   static async update(req: Request, res: Response, next: NextFunction) {
-    const user = req.body;
+    const user = req.body as User;
     const userId = req.params.id as string;
     const docRef = getFirestore().collection("users").doc(userId);
-
-    if (!user.email || !user.email?.length) {
-      throw new ValidationError("E-mail obrigatório!");
-    }
-
-    if (!user.nome || !user.nome?.length) {
-      throw new ValidationError("Nome obrigatório!");
-    }
 
     if (!(await docRef.get()).exists) {
       throw new NotFoundError();
