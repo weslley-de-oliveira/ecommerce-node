@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { getFirestore } from "firebase-admin/firestore";
+import { NotFoundError } from "../errors/not-found.erro";
 import { ValidationError } from "../errors/validation.error";
 
 export class UsersController {
@@ -18,11 +19,14 @@ export class UsersController {
 
   static async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      let userId = req.params.id as string;
+      const userId = req.params.id as string;
       const doc = await getFirestore().collection("users").doc(userId).get();
-      const user = { id: doc.id, ...doc.data() };
 
-      res.send(user);
+      if (!doc.exists) {
+        throw new NotFoundError();
+      }
+
+      res.send({ id: doc.id, ...doc.data() });
     } catch (error) {
       next(error);
     }
@@ -30,7 +34,7 @@ export class UsersController {
 
   static async create(req: Request, res: Response, next: NextFunction) {
     try {
-      let user = req.body;
+      const user = req.body;
 
       if (!user.email || !user.email?.length) {
         throw new ValidationError("E-mail obrigatório!");
@@ -43,7 +47,7 @@ export class UsersController {
       await getFirestore().collection("users").add(user);
 
       res.status(201).send({
-        message: `Usuário criado com sucesso!`,
+        message: "Usuário criado com sucesso!",
       });
     } catch (error) {
       next(error);
@@ -52,10 +56,23 @@ export class UsersController {
 
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
-      let user = req.body;
-      let userId = req.params.id as string;
+      const user = req.body;
+      const userId = req.params.id as string;
+      const docRef = getFirestore().collection("users").doc(userId);
 
-      await getFirestore().collection("users").doc(userId).set({
+      if (!user.email || !user.email?.length) {
+        throw new ValidationError("E-mail obrigatório!");
+      }
+
+      if (!user.nome || !user.nome?.length) {
+        throw new ValidationError("Nome obrigatório!");
+      }
+
+      if (!(await docRef.get()).exists) {
+        throw new NotFoundError();
+      }
+
+      await docRef.set({
         nome: user.nome,
         email: user.email,
       });
@@ -70,8 +87,13 @@ export class UsersController {
 
   static async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      let userId = req.params.id as string;
-      await getFirestore().collection("users").doc(userId).delete();
+      const userId = req.params.id as string;
+      const docRef = getFirestore().collection("users").doc(userId);
+
+      if (!(await docRef.get()).exists) {
+        throw new NotFoundError();
+      }
+      await docRef.delete();
 
       res.send({
         message: "Usuário excluído com scesso!",
