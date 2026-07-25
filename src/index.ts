@@ -1,10 +1,14 @@
-import { initializeApp } from "firebase-admin/app";
 import express from "express";
+import { initializeApp as initializeFirebaseAdminApp } from "firebase-admin/app";
+import { initializeApp as initializeFirebaseApp } from "firebase/app";
 import { errorHandler } from "./middlewares/error-handler.middleware";
 import { routeNotFoundHandler } from "./middlewares/route-not-foung-handler";
 import { routes } from "./routes";
 
-initializeApp();
+initializeFirebaseAdminApp();
+initializeFirebaseApp({
+  apiKey: process.env.FIRE_API_KEY
+});
 const app = express();
 
 routes(app);
