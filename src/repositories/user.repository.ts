@@ -29,11 +29,12 @@ export class UserRepository {
   }
 
   async create(user: User): Promise<void> {
-    await this.collection.add(user);
+    delete user.senha;
+    await this.collection.doc(user.id).set(user);
   }
 
-  async update(id: string, user: User): Promise<void> {
-    await this.collection.doc(id).set({
+  async update(user: User): Promise<void> {
+    await this.collection.doc(user.id).set({
       nome: user.nome,
       email: user.email
     });
