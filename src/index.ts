@@ -1,5 +1,5 @@
-import express from "express";
 import { initializeApp } from "firebase-admin/app";
+import express from "express";
 import { errorHandler } from "./middlewares/error-handler.middleware";
 import { routeNotFoundHandler } from "./middlewares/route-not-foung-handler";
 import { routes } from "./routes";
