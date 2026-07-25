@@ -1,0 +1,14 @@
+import express, { NextFunction, Request, Response } from "express";
+import { UnauthorizedError } from "../errors/unauthorized.erro";
+
+export const auth = (app: express.Express) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.authorization?.split("Bearer")[1];
+
+    if (token) {
+      return next();
+    }
+
+    next(new UnauthorizedError());
+  });
+};
