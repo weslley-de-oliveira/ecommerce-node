@@ -1,11 +1,11 @@
 import { celebrate, Segments } from "celebrate";
-import express from "express";
+import { Router } from "express";
 import asyncHandler from "express-async-handler";
 import { UserController } from "../controllers/user.controller";
 import { userSchema } from "../models/user.model";
 
 // Módulo do Express pra criação e configuração de Rotas
-export const userRoutes = express.Router();
+export const userRoutes = Router();
 
 userRoutes.get("/users", asyncHandler(UserController.getAll));
 userRoutes.get("/users/:id", asyncHandler(UserController.getById));

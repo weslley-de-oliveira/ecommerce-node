@@ -6,6 +6,10 @@ export const firebaseError: Record<FirebaseErrorsEnum, ErrorT> = {
   [FirebaseErrorsEnum.EMAIL_EXISTENTE]: {
     status: 409,
     message: "Já existe um usuário cadastrado com este e-mail."
+  },
+  [FirebaseErrorsEnum.EMAIL_OU_SENHA_INVALIDA]: {
+    status: 401,
+    message: "E-mail ou senha inválida. Por favor, revise os campos."
   }
 };
 
