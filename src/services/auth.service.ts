@@ -6,6 +6,7 @@ import {
 } from "firebase-admin/auth";
 import {
   getAuth as getFirebaseAuth,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   UserCredential
 } from "firebase/auth";
@@ -55,6 +56,16 @@ export class AuthService {
       auth.email,
       auth.senha
     ).catch((error) => {
+      if (error instanceof FirebaseError) {
+        throwFireBaseError(error.code as FirebaseErrorsEnum);
+      }
+
+      throw error;
+    });
+  }
+
+  async recovery(email: string) {
+    return sendPasswordResetEmail(getFirebaseAuth(), email).catch((error) => {
       if (error instanceof FirebaseError) {
         throwFireBaseError(error.code as FirebaseErrorsEnum);
       }

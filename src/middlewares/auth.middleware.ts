@@ -8,7 +8,9 @@ export const auth = (app: express.Express) => {
   app.use(async (req: Request, res: Response, next: NextFunction) => {
     if (
       req.method === "POST" &&
-      (req.url.startsWith("/auth/login") || req.url.startsWith("/users"))
+      (req.url.startsWith("/auth/login") ||
+        req.url.startsWith("/auth/recovery") ||
+        req.url.startsWith("/users"))
     ) {
       return next();
     }
