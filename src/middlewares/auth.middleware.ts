@@ -6,24 +6,24 @@ import { ForbiddenError } from "../errors/forbidden.erro";
 
 export const auth = (app: express.Express) => {
   app.use(async (req: Request, res: Response, next: NextFunction) => {
-    if (req.method === "POST" && req.url.startsWith("/auth/login")) {
+    if (
+      req.method === "POST" &&
+      (req.url.startsWith("/auth/login") || req.url.startsWith("/users"))
+    ) {
       return next();
     }
 
     const token = req.headers.authorization?.split("Bearer ")[1];
 
     if (token) {
-      console.log(token);
       try {
         const decodeIdToken = await getAuth().verifyIdToken(token, true);
         const user = await new UserService().getById(decodeIdToken.uid);
 
         if (!user) {
-          console.log("Não tem user");
           return next(new ForbiddenError());
         }
 
-        console.log("Tem user");
         req.user = user;
 
         return next();

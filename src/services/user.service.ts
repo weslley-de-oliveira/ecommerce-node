@@ -33,19 +33,23 @@ export class UserService {
   }
 
   async update(user: User, id: string) {
-    const existing = await this._repository.getById(id);
+    let _user = await this._repository.getById(id);
 
-    if (!existing) {
+    if (!_user) {
       throw new NotFoundError();
     }
 
-    await this._repository.update(user);
+    _user.nome = user.nome;
+    _user.email = user.email;
+
+    await this._authService.update(id, user);
+    await this._repository.update(_user);
   }
 
   async delete(id: string) {
-    const existing = await this._repository.getById(id);
+    const _user = await this._repository.getById(id);
 
-    if (!existing) {
+    if (!_user) {
       throw new NotFoundError();
     }
 

@@ -11,6 +11,8 @@ export const errorHandler = (app: express.Express) => {
       return;
     }
 
+    console.log(error);
+
     new InternalServerError().send(res);
   });
 };

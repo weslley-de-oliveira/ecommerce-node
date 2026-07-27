@@ -1,6 +1,7 @@
 import {
   FirebaseAuthError,
   getAuth as getFirebaseAdminAuth,
+  UpdateRequest,
   UserRecord
 } from "firebase-admin/auth";
 import {
@@ -29,6 +30,19 @@ export class AuthService {
 
         throw error;
       });
+  }
+
+  async update(id: string, user: User) {
+    const props: UpdateRequest = {
+      displayName: user.nome,
+      email: user.email
+    };
+
+    if (user.senha) {
+      props.password = user.senha;
+    }
+
+    await getFirebaseAdminAuth().updateUser(id, props);
   }
 
   async login(auth: AuthT): Promise<UserCredential> {
