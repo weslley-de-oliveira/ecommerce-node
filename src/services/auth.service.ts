@@ -45,6 +45,10 @@ export class AuthService {
     await getFirebaseAdminAuth().updateUser(id, props);
   }
 
+  async delete(id: string) {
+    return getFirebaseAdminAuth().deleteUser(id);
+  }
+
   async login(auth: AuthT): Promise<UserCredential> {
     return signInWithEmailAndPassword(
       getFirebaseAuth(),

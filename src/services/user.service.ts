@@ -53,6 +53,7 @@ export class UserService {
       throw new NotFoundError();
     }
 
+    await this._authService.delete(id);
     await this._repository.delete(id);
   }
 }
