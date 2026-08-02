@@ -19,11 +19,13 @@
   },
   "homepage": "https://github.com/weslley-de-oliveira/ecommerce-node#readme",
   "dependencies": {
+    "aws-sdk": "^2.1693.0",
     "celebrate": "^15.0.3",
     "express": "^5.2.1",
     "express-async-handler": "^1.2.0",
     "firebase": "^12.16.0",
     "firebase-admin": "^14.2.0",
+    "mime": "^4.1.0",
     "multer": "^2.2.0"
   },
   "devDependencies": {

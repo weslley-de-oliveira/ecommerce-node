@@ -5,11 +5,15 @@ import path from "path";
 import fs from "fs";
 import crypto from "crypto";
 
+export function getPathMulter(folder: string): string {
+  return path.resolve(__dirname, "../../uploads", folder);
+}
+
 export function createUpload(folder: string) {
   return multer({
     storage: multer.diskStorage({
       destination(req, file, cb) {
-        const uploadPath = path.resolve(__dirname, "../../uploads", folder);
+        const uploadPath = getPathMulter(folder);
 
         fs.mkdirSync(uploadPath, { recursive: true });
 

@@ -20,6 +20,9 @@ companyRoutes.post(
 );
 companyRoutes.put(
   "/companies/:id",
+  upload("companies"),
+  injectFileToBody("file"),
+  validateBody(newCompanySchema),
   celebrate({
     [Segments.BODY]: updateCompanySchema
   }),
