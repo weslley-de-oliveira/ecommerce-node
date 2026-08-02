@@ -3,18 +3,20 @@ import { Router } from "express";
 import asyncHandler from "express-async-handler";
 import { CompanyController } from "../controllers/company.controller";
 import { newCompanySchema, updateCompanySchema } from "../models/company.model";
+import { upload } from "../middlewares/upload.middleware";
+import { injectFileToBody } from "../middlewares/inject-file-to-body.middleware";
+import { validateBody } from "../middlewares/validate-body";
 
-// Módulo do Express pra criação e configuração de Rotas
 export const companyRoutes = Router();
 
 companyRoutes.get("/companies", asyncHandler(CompanyController.getAll));
 companyRoutes.get("/companies/:id", asyncHandler(CompanyController.getById));
 companyRoutes.post(
   "/companies",
-  celebrate({
-    [Segments.BODY]: newCompanySchema
-  }),
-  asyncHandler(CompanyController.create)
+  upload("companies"),
+  injectFileToBody("file"),
+  validateBody(newCompanySchema),
+  CompanyController.create
 );
 companyRoutes.put(
   "/companies/:id",

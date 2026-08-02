@@ -2,7 +2,7 @@ import { Joi } from "celebrate";
 
 export type Company = {
   id?: string;
-  logomarca: string;
+  file: string;
   cpfCnpj: string;
   razaoSocial: string;
   nomeFantasia: string;
@@ -15,7 +15,7 @@ export type Company = {
 };
 
 export const newCompanySchema = Joi.object().keys({
-  logomarca: Joi.string().allow(null),
+  file: Joi.string().optional().allow(null, ""),
   cpfCnpj: Joi.alternatives().try(
     Joi.string().length(11).required(),
     Joi.string().length(14).required()
@@ -31,11 +31,12 @@ export const newCompanySchema = Joi.object().keys({
   endereco: Joi.string().required(),
   localizacao: Joi.string().required(),
   taxaEntrega: Joi.number().required(),
-  ativa: Joi.boolean().only().allow(true).default(true)
+  // Garante a conversão correta de string "true" / "false" para boolean
+  ativa: Joi.boolean().truthy("true").falsy("false").default(true)
 });
 
 export const updateCompanySchema = Joi.object().keys({
-  logomarca: Joi.string().allow(null),
+  file: Joi.string().optional().allow(null, ""),
   cpfCnpj: Joi.alternatives().try(
     Joi.string().length(11).required(),
     Joi.string().length(14).required()
@@ -51,5 +52,5 @@ export const updateCompanySchema = Joi.object().keys({
   endereco: Joi.string().required(),
   localizacao: Joi.string().required(),
   taxaEntrega: Joi.number().required(),
-  ativa: Joi.boolean().required()
+  ativa: Joi.boolean().truthy("true").falsy("false").required()
 });
