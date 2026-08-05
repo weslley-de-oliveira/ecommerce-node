@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/weslley-de-oliveira/ecommerce-node#readme",
   "dependencies": {
-    "aws-sdk": "^2.1693.0",
+    "@aws-sdk/client-s3": "^3.1102.0",
     "celebrate": "^15.0.3",
     "express": "^5.2.1",
     "express-async-handler": "^1.2.0",

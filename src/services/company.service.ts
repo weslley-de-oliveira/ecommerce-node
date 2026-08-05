@@ -35,11 +35,7 @@ export class CompanyService {
     id: string,
     file: Express.Multer.File | undefined = undefined
   ) {
-    let _company = await this._repository.getById(id);
-
-    if (!_company) {
-      throw new NotFoundError();
-    }
+    let _company = await this.getById(id);
 
     _company = { ...company, id: id, file: _company.file };
 

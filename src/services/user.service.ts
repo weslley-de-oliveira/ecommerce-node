@@ -33,11 +33,7 @@ export class UserService {
   }
 
   async update(user: User, id: string) {
-    let _user = await this._repository.getById(id);
-
-    if (!_user) {
-      throw new NotFoundError();
-    }
+    let _user = await this.getById(id);
 
     _user.nome = user.nome;
     _user.email = user.email;
